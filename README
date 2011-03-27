@@ -1,0 +1,38 @@
+Php makes you go out of your way to escape the output. To properly escape data
+outputted to a HTML document, <?=$some_variable?> becomes
+<?=htmlspecialchars($some_variable, ENT_QUOTES)?>. Sometimes developers make
+shorted helper functions, such as <?=h($some_variable)?>. That's still more
+than I would like to do 99% of the time I output data.
+
+SafePhp tags were designed around the following ideas:
+- Most output in views should be escaped.
+- The default output tag should escaped the data
+
+SafePhp examples:
+<%=$escape_this_variable%>
+<%==$dont_escape_this%>
+<%if(...):%>
+<%foreach(...):%>
+
+Installation instructions:
+- Open system/core/Loader.php
+- look for this block:
+		else
+		{
+			include($_ci_path); // include() vs include_once() allows for multiple views with the same name
+		}
+- just above that 'else' and below the '}' on the line above it, place the following:
+    else if(config_item('rewrite_safephp_tags') == TRUE)
+    {
+      $this->load->helper('safephp');
+      include("safephp://{$_ci_path}");
+    }
+
+SafePhp extensions are now installed. To be used, they need to be enabled in application/config/config.php
+- open application/config/config.php
+- at the end of the file place the following:
+   $config['rewrite_safephp_tags'] = true;
+
+Provided with these libs is a testpage. In your browser, go to
+$CI_ROOT/index.php/safephptest. If the description matches the
+output, you're good to go.
