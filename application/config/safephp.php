@@ -9,7 +9,7 @@
 | parsing.
 |
 */
-$config['safephp']['rewrite_enabled'] = false;
+$config['rewrite_enabled'] = TRUE;
 
 /*
 |--------------------------------------------------------------------
@@ -27,7 +27,7 @@ $config['safephp']['rewrite_enabled'] = false;
 |   <{endif}>
 |
 */
-$config['safephp']['tag']['control'] = array('<{', '}>');
+$config['control_tag'] = array('<{', '}>');
 
 /*
 |--------------------------------------------------------------------
@@ -43,7 +43,7 @@ $config['safephp']['tag']['control'] = array('<{', '}>');
 |   <[$text]> -> outputs &lt;h1&gt;XSS Attempt&lt;/h1&gt;
 |
 */
-$config['safephp']['tag']['escaped_output'] = array('<[', ']>');
+$config['escaped_output_tag'] = array('<[', ']>');
 
 /*
 |--------------------------------------------------------------------
@@ -60,4 +60,4 @@ $config['safephp']['tag']['escaped_output'] = array('<[', ']>');
 |   <[$text]> -> outputs <h1>XSS Attempt</h1>
 |
 */
-$config['safephp']['tag']['unescaped_output'] = array('<[[', ']]>');
+$config['unescaped_output_tag'] = array('<[[', ']]>');
