@@ -39,6 +39,12 @@ if(!class_exists('SafePhp')) {
         'OPENTAG'   => preg_quote($tag[0], '/'),
         'CLOSETAG'  => preg_quote($tag[1], '/'),
       ));
+      if(preg_match('/^OPENTAG.*CLOSETAG$/', $replacement)) {
+        $replacement = strtr($replacement, array(
+          'OPENTAG'   => $tag[0],
+          'CLOSETAG'  => $tag[1],
+        ));
+      }
       array_unshift($this->patterns, $regex);
       array_unshift($this->replacements, $replacement);
     }
@@ -59,7 +65,6 @@ if(!class_exists('SafePhp')) {
 
     public function to_php($safephp_string) {
       $retval = preg_replace($this->patterns, $this->replacements, $safephp_string);
-      log_message('debug', print_r($this->patterns, true) . print_r($this->replacements, true) . $retval);
       return $retval;
     }
   }
