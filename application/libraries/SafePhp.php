@@ -13,16 +13,18 @@ if(!class_exists('SafePhp')) {
       }
       log_message('debug', 'SafePhp class initialized');
 
-      $this->pairs = array();
-      $this->add(
-        'unescaped_output',
-        '/OPENTAG((?:(?!CLOSETAG).)*)CLOSETAG/',
-        '<?php echo $1 ?>'
-      );
+      $this->patterns = array();
+      $this->replacements = array();
+
       $this->add(
         'escaped_output',
         '/OPENTAG((?:(?!CLOSETAG).)*)CLOSETAG/',
         '<?php echo htmlspecialchars($1, ENT_QUOTES) ?>'
+      );
+      $this->add(
+        'unescaped_output',
+        '/OPENTAG((?:(?!CLOSETAG).)*)CLOSETAG/',
+        '<?php echo $1 ?>'
       );
       $this->add(
         'control',
@@ -37,7 +39,8 @@ if(!class_exists('SafePhp')) {
         'OPENTAG'   => preg_quote($tag[0], '/'),
         'CLOSETAG'  => preg_quote($tag[1], '/'),
       ));
-      $this->pairs[$regex] = $replacement;
+      array_unshift($this->patterns, $regex);
+      array_unshift($this->replacements, $replacement);
     }
 
     public function get_config($key) {
@@ -45,14 +48,6 @@ if(!class_exists('SafePhp')) {
         return $this->get_config('_' . $key);
       }
       return $this->$key;
-    }
-
-    public function regexes() {
-      return array_keys($this->pairs);
-    }
-
-    public function replacements() {
-      return array_values($this->pairs);
     }
 
     public function set_config($key, $value) {
@@ -63,7 +58,9 @@ if(!class_exists('SafePhp')) {
     }
 
     public function to_php($safephp_string) {
-      return preg_replace($this->regexes(), $this->replacements(), $safephp_string);
+      $retval = preg_replace($this->patterns, $this->replacements, $safephp_string);
+      log_message('debug', print_r($this->patterns, true) . print_r($this->replacements, true) . $retval);
+      return $retval;
     }
   }
 }
